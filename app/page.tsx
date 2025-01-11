@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import TeamMember from "@/components/TeamMember";
 
-const apiKey = "CG-rRQDcm1zLtTA85CHzB3NtMQj"
+const apiKey = "CG-rRQDcm1zLtTA85CHzB3NtMQj";
 
 export default function Home() {
 
