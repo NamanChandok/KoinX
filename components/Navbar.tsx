@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faMultiply} from '@fortawesome/free-solid-svg-icons'
 
-type Props = {}
-
-export default function Navbar({}: Props) {
+export default function Navbar() {
     
     const [isOpen, setIsOpen] = useState(true);
     useEffect(() => {

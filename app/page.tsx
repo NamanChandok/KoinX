@@ -5,14 +5,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import TradingViewWidget from "@/components/TradingViewWidget";
 import TeamMember from "@/components/TeamMember";
+import CoinPrice from "@/interfaces/CoinPrice";
+import CoinInfo from "@/interfaces/CoinInfo";
+import Coin from "@/interfaces/Coin";
 
 const apiKey = "CG-rRQDcm1zLtTA85CHzB3NtMQj";
 
 export default function Home() {
 
-  const [trendingCoins, setTrendingCoins] = useState<any>([])
-  const [coinPrice, setcoinPrice] = useState<any>({})
-  const [coinInfo, setcoinInfo] = useState<any>({})
+  const [trendingCoins, setTrendingCoins] = useState<Coin[]>([])
+  const [coinPrice, setcoinPrice] = useState<CoinPrice>({inr: 0, usd: 0, inr_24h_change: 0, usd_24h_change: 0})
+  const [coinInfo, setcoinInfo] = useState<CoinInfo>({name: '', symbol: '', market_data: {market_cap: {usd: 0}, market_cap_rank: 0, total_volume: {usd: 0}, high_24h: {usd: 0}, low_24h: {usd: 0}, current_price: {usd: 0}, atl: {usd: 0}, ath: {usd: 0}, fully_diluted_valuation: {usd: 0}}, image: {thumb: '', small: '', large: ''}})
 
   useEffect(() => {
 
@@ -112,7 +115,7 @@ export default function Home() {
               <img className="h-8 w-8 rounded-full" src={coinInfo.image.thumb} alt={coinInfo.name} /> 
               {coinInfo.name}
               <span className="text-base text-light_gray uppercase">{coinInfo.symbol}</span>
-              <span className="bg-light_gray ml-4 p-2 rounded-md text-sm text-white font-base">Rank #{coinInfo.market_cap_rank}</span>
+              <span className="bg-light_gray ml-4 p-2 rounded-md text-sm text-white font-base">Rank #{coinInfo.market_data.market_cap_rank}</span>
               </h1>
             }
             {coinPrice.usd && <div className="flex items-center gap-4 pt-4">
@@ -124,7 +127,7 @@ export default function Home() {
                 </div> : 
                 <div className="text-stock_red font-medium text-sm bg-stock_red_bg px-2 py-1 rounded-sm space-x-1">
                   <FontAwesomeIcon icon={faCaretDown} />
-                  <span>{coinPrice.usd_24h_change.toFixed(2)*-1}%</span>
+                  <span>{(coinPrice.usd_24h_change*-1).toFixed(2)}%</span>
                 </div>
               }
               <span className="text-light_gray text-sm font-medium">(24H)</span>
@@ -157,7 +160,7 @@ export default function Home() {
             {coinInfo.name && 
             <div className="flex justify-between gap-4 pt-4 items-center">
               <div className="grid gap-2">
-                <span className="text-sm text-nowrap text-light_gray">Today's Low</span>
+                <span className="text-sm text-nowrap text-light_gray">Today&apos;s Low</span>
                 <span className="text-gray">${coinInfo.market_data.low_24h.usd.toLocaleString()}</span>
               </div>
               <div className="h-1 rounded-md w-24 md:w-7/10 relative bg-gradient-red-green">
@@ -166,7 +169,7 @@ export default function Home() {
                 }} icon={faCaretUp} />
               </div>
               <div className="grid gap-2 text-right">
-                <span className="text-sm text-nowrap text-gray">Today's High</span>
+                <span className="text-sm text-nowrap text-gray">Today&apos;s High</span>
                 <span className="text-gray">${coinInfo.market_data.high_24h.usd.toLocaleString()}</span>
               </div>
             </div>
@@ -349,7 +352,7 @@ export default function Home() {
                   <FontAwesomeIcon icon={faAngleRight} />
                 </button>
                 <div className="overflow-x-auto text-nowrap space-x-4 py-4 scroll-smooth" id="scroller3">
-                {trendingCoins.map((coin:any, index:number) => (
+                {trendingCoins.map((coin:Coin, index:number) => (
                     <div key={index} className="w-48 inline-block rounded-lg border-2 border-light_gray/20 p-3">
                       <div className="flex items-center gap-2">
                         <img className="h-6 w-6 rounded-full" src={coin.item.thumb} alt={coin.item.name} /> 
@@ -379,7 +382,7 @@ export default function Home() {
                   <FontAwesomeIcon icon={faAngleRight} />
                 </button>
                 <div className="overflow-x-auto text-nowrap space-x-4 py-4 scroll-smooth" id="scroller4">
-                {trendingCoins.map((coin:any, index:number) => (
+                {trendingCoins.map((coin:Coin, index:number) => (
                     <div key={index} className="w-48 inline-block rounded-lg border-2 border-light_gray/20 p-3">
                       <div className="flex items-center gap-2">
                         <img className="h-6 w-6 rounded-full" src={coin.item.thumb} alt={coin.item.name} /> 
@@ -420,7 +423,7 @@ export default function Home() {
           <div className="bg-white p-8 rounded-lg h-max md:block hidden">
             <h1 className="font-semibold text-2xl">Trending Coins (24h)</h1>
             <div className="grid gap-4 pt-4 relative">
-            {trendingCoins.slice(0,3).map((coin:any, index:number) => (
+            {trendingCoins.slice(0,3).map((coin:Coin, index:number) => (
               <div key={index} className="flex gap-2 font-medium items-center">
                 <img className="h-8 w-8 rounded-full" src={coin.item.thumb} alt={coin.item.name} /> 
                 <span className="truncate max-w-24">{coin.item.name}</span> ({coin.item.symbol})
@@ -431,7 +434,7 @@ export default function Home() {
                 </div> : 
                 <div className="text-stock_red font-medium text-sm bg-stock_red_bg px-2 py-1 rounded-sm space-x-1 right-0 absolute">
                   <FontAwesomeIcon icon={faCaretDown} />
-                  <span>{coin.item.data.price_change_percentage_24h.usd.toFixed(2)*-1}%</span>
+                  <span>{(coin.item.data.price_change_percentage_24h.usd*-1).toFixed(2)}%</span>
                 </div>
                 }
               </div>
@@ -458,7 +461,7 @@ export default function Home() {
           <FontAwesomeIcon icon={faAngleRight} />
         </button>
         <div className="overflow-x-auto text-nowrap space-x-4 py-4 scroll-smooth" id="scroller1">
-        {trendingCoins.map((coin:any, index:number) => (
+        {trendingCoins.map((coin:Coin, index:number) => (
             <div key={index} className="w-64 inline-block rounded-lg border-2 border-light_gray/20 p-3">
               <div className="flex items-center gap-2">
                 <img className="h-6 w-6 rounded-full" src={coin.item.thumb} alt={coin.item.name} /> 
@@ -488,7 +491,7 @@ export default function Home() {
           <FontAwesomeIcon icon={faAngleRight} />
         </button>
         <div className="overflow-x-auto text-nowrap space-x-4 py-4 scroll-smooth" id="scroller2">
-        {trendingCoins.map((coin:any, index:number) => (
+        {trendingCoins.map((coin:Coin, index:number) => (
             <div key={index} className="w-64 inline-block rounded-lg border-2 border-light_gray/20 p-3">
               <div className="flex items-center gap-2">
                 <img className="h-6 w-6 rounded-full" src={coin.item.thumb} alt={coin.item.name} /> 
@@ -516,7 +519,7 @@ export default function Home() {
     <div className="bg-white p-6 md:hidden">
       <h1 className="font-semibold text-2xl">Trending Coins (24h)</h1>
       <div className="grid gap-4 pt-4 relative">
-      {trendingCoins.slice(0,3).map((coin:any, index:number) => (
+      {trendingCoins.slice(0,3).map((coin:Coin, index:number) => (
         <div key={index} className="flex gap-2 font-medium items-center">
           <img className="h-8 w-8 rounded-full" src={coin.item.thumb} alt={coin.item.name} /> 
           <span className="truncate max-w-24">{coin.item.name}</span> ({coin.item.symbol})
@@ -527,7 +530,7 @@ export default function Home() {
           </div> : 
           <div className="text-stock_red font-medium text-sm bg-stock_red_bg px-2 py-1 rounded-sm space-x-1 right-0 absolute">
             <FontAwesomeIcon icon={faCaretDown} />
-            <span>{coin.item.data.price_change_percentage_24h.usd.toFixed(2)*-1}%</span>
+            <span>{(coin.item.data.price_change_percentage_24h.usd*-1).toFixed(2)}%</span>
           </div>
           }
         </div>
